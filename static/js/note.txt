@@ -1,0 +1,132 @@
+$(document).ready(function() {
+    $(document).delegate('#verify', 'click', function(e) {
+        e.preventDefault();
+        const email = $('#em').val();
+        if(email == null || email == ""){
+            alert("Email is required");
+            return
+        }
+        else{
+            let num='Number=23&email='+email;
+            //window.location='index.php';
+            $.ajax({
+                url: "backend2.php?"+num,
+                type: "GET",
+                success: function(data) { 
+                        if(data==1){
+                            alert('A customer already using this Email. You can not use it for Registration.');
+                        } else {
+                            alert('You can use this email.');
+                        }
+                },
+                error: function(err) {
+                    alert('error');                    
+                }
+            });
+        }
+    });
+    // Customer Registration
+    $('#cr').on("submit", function(e) {
+        e.preventDefault();
+        const email = $('#em').val(); 
+        console.log(email);   
+        const formData= $("#cr").serialize();
+        console.log(formData);
+        let num='Number=23&email='+email;
+        //window.location='index.php';
+        $.ajax({
+            url: "backend2.php?"+num,
+            type: "GET",
+            success: function(data) { 
+                console.log(data);
+                if (data==0){
+                    num='Number=24&'+formData;
+                    $.ajax({
+                        /*url:'addUser.php',
+                        method:'POST',
+                        data:fromData,
+                        contentType:false,
+                        cache:false,
+                        processData:false,
+                        success:function(data){*/
+                        
+                        url: "backend2.php?"+num,
+                        type: "GET",
+                        success: function(data) { 
+                            console.log(data);
+                            if(data==true){
+                                alert("New User Added.");
+                                window.location='index.php';
+                            }
+                            else{
+                                alert("Something went wrong.");
+                            } 
+                        }
+                    });
+                }
+                else{
+                    alert("A User already exists for this Email address. User not added. Try with another Email Address.");
+                }
+            }
+        });      
+    });
+});
+
+
+console.log(arr);
+        arr[2][1]=arr[1][1];
+        arr[1][1]=0;
+        let ret=[]
+        ret.push(arr);
+        ret.push(allcast);
+        ret.push(turn);
+        ret.push(get_move);
+        ret.push(move_count);
+        ret.push(white_moves);
+        ret.push(black_moves);
+        ret.push(captured);
+        ret.push(en_passant);
+        ret.push(ext);
+        console.log(ret);
+        let newdata=JSON.stringify(ret);
+        //fetchData(top, left,{"first":false,"data":data});
+        await $.ajax({
+            url: 'http://127.0.0.1:5000/first',
+            type: 'POST',
+            data: JSON.stringify({"first":false,"data":newdata}), // Convert JavaScript object to JSON string
+            contentType: 'application/json', // Set content type to JSON
+            success: function(response) {
+                console.log(response); // No need to parse JSON, jQuery handles it automatically
+                let input=JSON.parse(response);
+                arr=input[0], allcast=input[1],turn=input[2],get_move=input[3],move_count=input[4],white_moves=input[5],
+                black_moves=input[6],captured=input[7],en_passant=input[8],ext=input[9];
+                
+                top=top+10
+                left=left+10
+                let z=0;
+                for (let x in arr) {
+                    for (let y in arr[x]) {
+                        myBoard[z]=arr[x][y]
+                        if(arr[x][y]){
+                            sub=arr[x][y].substr(0, 2)
+                            console.log(img_location[sub])
+                            insertIcon(img_location[sub],arr[x][y],top+525-(75*x),left+(y*75),60,"It is the "+arr[x][y])
+                        }
+                        z++
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        
+        });
+
+
+        /* Log the response data or perform further processing
+        console.log('Response:', response);
+        
+        
+    /*} catch (error) {
+        console.error('Error:', error);
+    }*/
